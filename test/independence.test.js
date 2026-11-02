@@ -12,6 +12,8 @@ const forbiddenParts = [
   'ronda', 'aw' + 'ards', 'twin' + 'browser'
 ];
 const forbidden = new RegExp(forbiddenParts.join('|'), 'i');
+// The project's own public repository link is allowed; nothing else under that account is.
+const publicRepo = new RegExp('github\\.com/' + 'chris' + 'butler4701-dotcom/agent-browser-bridge', 'gi');
 
 function files(directory) {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -24,7 +26,7 @@ function files(directory) {
 test('the entire distributable tree is independent of private infrastructure', () => {
   const offenders = files(root).filter((path) => {
     if (excludedFiles.has(relative(root, path))) return false;
-    return forbidden.test(readFileSync(path).toString('utf8'));
+    return forbidden.test(readFileSync(path).toString('utf8').replace(publicRepo, ''));
   }).map((path) => relative(root, path));
   assert.deepEqual(offenders, []);
 });
