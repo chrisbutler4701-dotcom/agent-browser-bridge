@@ -1,0 +1,53 @@
+{
+  "manifest_version": 3,
+  "minimum_chrome_version": "116",
+  "name": "Field Browser Bridge",
+  "version": "1.5.0",
+  "options_page": "privacy.html",
+  "description": "Securely connects Claude, ChatGPT, Codex, and Claude Code to your paired browser.",
+  "permissions": [
+    "activeTab",
+    "alarms",
+    "offscreen",
+    "scripting",
+    "storage",
+    "sidePanel",
+    "tabs",
+    "debugger"
+  ],
+  "host_permissions": [
+    "http://127.0.0.1/*",
+    "http://localhost/*"
+  ],
+  "optional_host_permissions": [
+    "<all_urls>",
+    "https://*/*"
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https: wss: http://127.0.0.1:* ws://127.0.0.1:* http://localhost:* ws://localhost:*"
+  },
+  "background": {
+    "service_worker": "service-worker.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "Field Browser Bridge",
+    "default_icon": {
+      "16": "icons/work-edge-tools-16.svg",
+      "32": "icons/work-edge-tools-32.svg"
+    }
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "web_accessible_resources": [{
+    "resources": ["vendor/pdf.mjs", "vendor/pdf.worker.mjs"],
+    "matches": ["https://*/*", "http://localhost/*", "http://127.0.0.1/*"]
+  }],
+  "icons": {
+    "16": "icons/work-edge-tools-16.svg",
+    "32": "icons/work-edge-tools-32.svg",
+    "48": "icons/work-edge-tools-48.svg",
+    "128": "icons/work-edge-tools-128.svg"
+  }
+}

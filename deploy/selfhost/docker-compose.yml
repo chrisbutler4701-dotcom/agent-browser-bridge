@@ -1,0 +1,35 @@
+services:
+  broker:
+    build: ../..
+    image: field-browser-bridge:latest
+    restart: unless-stopped
+    environment:
+      FBB_IN_CONTAINER: "1"
+      FBB_DATA_DIR: /data
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://127.0.0.1:8767}
+    ports: ["127.0.0.1:${FBB_PORT:-8767}:8767"]
+    volumes: [fbb-data:/data]
+
+  cloud-browser:
+    profiles: [cloud]
+    build:
+      context: ../..
+      dockerfile: deploy/cloud-browser/Dockerfile
+    image: field-browser-bridge-cloud:latest
+    restart: unless-stopped
+    depends_on: [broker]
+    environment:
+      FBB_SERVER: http://broker:8767/work-edge/ingest
+      FBB_PAIR_CODE: ${FBB_PAIR_CODE:-}
+    security_opt:
+      - seccomp=./cloud-browser-seccomp.json
+      - no-new-privileges:true
+    cap_drop: [ALL]
+    # Chromium's namespace sandbox chroots its renderers; verified on Linux (kernel 6.8).
+    cap_add: [SYS_CHROOT]
+    volumes: [cloud-profile:/profile]
+    shm_size: 1gb
+
+volumes:
+  fbb-data:
+  cloud-profile:

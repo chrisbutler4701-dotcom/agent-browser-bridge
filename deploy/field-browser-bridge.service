@@ -1,0 +1,22 @@
+[Unit]
+Description=Field Browser Bridge MCP broker
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/field-browser-bridge
+EnvironmentFile=/etc/field-browser-bridge/env
+ExecStart=/usr/bin/node /opt/field-browser-bridge/broker/src/server.js
+Restart=on-failure
+RestartSec=3
+
+StateDirectory=field-browser-bridge
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

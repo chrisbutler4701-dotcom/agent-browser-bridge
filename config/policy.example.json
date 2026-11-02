@@ -1,0 +1,22 @@
+{
+  "listen": { "host": "127.0.0.1", "port": 8765 },
+  "allowOrigins": ["*"],
+  "denyUrlPrefixes": [
+    "edge://",
+    "chrome://",
+    "file://",
+    "about:",
+    "https://login.microsoftonline.com/",
+    "https://account.microsoft.com/"
+  ],
+  "capture": {
+    "maxTextCharacters": 200000,
+    "screenshotEnabled": false,
+    "retentionSeconds": 300
+  },
+  "audit": {
+    "enabled": true,
+    "includePayloadContent": false,
+    "includeUrlPath": false
+  }
+}

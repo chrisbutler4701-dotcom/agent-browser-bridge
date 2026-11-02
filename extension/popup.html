@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="popup.css">
+    <title>Field Browser Bridge</title>
+  </head>
+  <body>
+    <main class="bridge" aria-labelledby="title">
+      <section id="privacySection" class="settings-card" hidden><h2>Privacy</h2><p id="privacySummary"></p><button id="openPrivacy" class="button secondary" type="button">Manage client roster</button></section>
+      <header class="masthead">
+        <p class="eyebrow">FIELD BROWSER BRIDGE</p>
+        <h1 id="title">Field Browser Bridge</h1>
+        <p id="extensionVersion" class="approval-note"></p>
+        <p class="intro">Talk to Claude or ChatGPT in their apps; they act on this browser through Field Browser Bridge.</p>
+        <button id="openSidePanelBtn" class="button primary" style="margin-top: 6px; width: 100%;" type="button">Open Field Browser Bridge</button>
+      </header>
+
+      <section class="context-card" aria-labelledby="contextTitle">
+        <div class="context-heading">
+          <span class="page-dot" aria-hidden="true"></span>
+          <div>
+            <p class="eyebrow" id="contextTitle">CURRENT PAGE</p>
+            <p id="pageTitle" class="page-title">No page context yet</p>
+          </div>
+        </div>
+        <p id="status" role="status">Enable reading normal tabs once to keep read-only page context available to Field Browser Bridge.</p>
+        <button id="enableReading" class="button secondary" type="button" hidden>Enable reading normal tabs</button>
+        <label class="monitor-toggle"><input id="readMonitoring" type="checkbox" checked> Read monitoring</label>
+        <p class="approval-note">Field Browser Bridge can read visible text on work pages. Read access is read-only — never cookies, storage, form values, or actions.</p>
+        <div id="readApproval" class="read-approval sub-option" style="margin-left: 12px">
+          <p id="sensitiveReadNotice">Sensitive content is readable by default on this page.</p>
+          <label class="monitor-toggle"><input id="restrictSensitiveRead" type="checkbox"> Require per-site approval for sensitive content</label>
+          <button id="allowSensitiveRead" class="button secondary" type="button">Allow sensitive reads for this site</button>
+          <button id="forgetSensitiveRead" class="link-button" type="button" hidden>Forget sensitive read trust</button>
+          <p id="sensitiveReadStatus" class="approval-note" hidden>Sensitive reads are restricted for this site until approved.</p>
+        </div>
+        <button id="capture" class="button primary" type="button">Refresh page context</button>
+      </section>
+
+      <section id="verifiedApprovalCard" class="approval-card" aria-labelledby="approvalTitle" hidden>
+        <p class="eyebrow">VERIFIED ACTION</p>
+        <h2 id="approvalTitle">Approval required</h2>
+        <p id="approvalIntent" class="approval-intent"></p>
+        <p id="approvalTarget" class="approval-target"></p>
+        <dl id="approvalChanges" class="approval-changes"></dl>
+        <p id="approvalCommit" class="approval-commit"></p>
+        <p class="approval-warning">Approve only if these exact changes belong to the record currently open. Approval expires and cannot authorize altered values.</p>
+        <div class="button-row">
+          <button id="rejectVerifiedAction" class="button danger" type="button">Reject</button>
+          <button id="approveVerifiedAction" class="button approve" type="button">Approve exact changes</button>
+        </div>
+        <p id="verifiedApprovalStatus" role="status"></p>
+      </section>
+
+      <section class="settings-card" aria-labelledby="brokerTitle">
+        <h2 id="brokerTitle">Broker connection</h2>
+        <p>One-time setup: save the broker URL, pair once, and enable reading once. Read monitoring is on by default and can be turned off above. Pairing is for first-time or recovery only.</p>
+        <label for="brokerUrl">Server address</label>
+        <input id="brokerUrl" type="url" value="" placeholder="https://your-server.example/work-edge/ingest">
+        <p class="approval-note">Use Field Browser Bridge cloud, or your own server's address</p>
+        <button id="saveBroker" class="button secondary" type="button">Save broker URL</button>
+        <label for="pairCode">Pairing code</label>
+        <input id="pairCode" inputmode="text" maxlength="12" autocomplete="off" spellcheck="false">
+        <div class="button-row">
+          <button id="pairBrowser" class="button secondary" type="button">Pair browser</button>
+          <button id="resetPairing" class="button text-button" type="button">Reset pairing</button>
+        </div>
+        <p id="pairStatus" role="status">Broker URL ready — click Save broker URL. Reset pairing clears the broker credential and browser control, but preserves explicit per-site sensitive-read trust; use Forget sensitive read trust on a site to revoke it.</p>
+      </section>
+
+      <section class="control-card" aria-labelledby="controlTitle">
+        <h2 id="controlTitle">Browser control</h2>
+        <p>Daily use: read-only monitoring continues in the background. Leave OFF unless you want an agent to drive the page with click, type, select, navigate, scroll, or wait. Final send, submit, save, and sign actions still need explicit approval.</p>
+        <button id="toggleBrowserControl" class="button primary" type="button">Turn browser control on</button>
+        <p id="armStatus" role="status">Browser control is OFF.</p>
+      </section>
+
+      <p class="footer-note">This bridge does not provide local chat, a browser persona, or a chat transcript.</p>
+    </main>
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

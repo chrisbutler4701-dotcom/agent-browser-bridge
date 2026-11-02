@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="popup.css">
+    <title>Field Browser Bridge</title>
+  </head>
+  <body class="side-panel">
+    <nav class="panel-views" role="tablist" aria-label="Side panel view">
+      <button id="showChat" class="view-tab" type="button" role="tab" aria-selected="true" aria-controls="chatView">Chat</button>
+      <button id="showBridge" class="view-tab" type="button" role="tab" aria-selected="false" aria-controls="bridgeView">Bridge</button>
+    </nav>
+    <section id="chatView" class="chat-view" role="tabpanel" aria-label="Cockpit chat">
+      <p id="chatRetryStatus" role="status" hidden></p>
+      <iframe id="cockpitFrame" title="Field Browser Cockpit" allow="microphone; autoplay; clipboard-read; clipboard-write" referrerpolicy="strict-origin"></iframe>
+      <button id="reloadChat" class="button secondary" type="button">Reload chat</button>
+      <details class="cockpit-settings">
+        <summary>Cockpit address</summary>
+        <label for="cockpitUrl">Cockpit address</label><input id="cockpitUrl" type="url" value="" placeholder="https://your-server.example/">
+        <button id="saveCockpit" class="button secondary" type="button">Save cockpit address</button>
+        <p id="cockpitStatus" class="approval-note" role="status">The same cockpit you use on your phone and desktop, so it is one conversation everywhere.</p>
+      </details>
+    </section>
+    <main class="bridge" id="bridgeView" role="tabpanel" aria-labelledby="title" hidden>
+      <section id="privacySection" class="settings-card" hidden><h2>Privacy</h2><p id="privacySummary"></p><button id="openPrivacy" class="button secondary" type="button">Manage client roster</button><button id="enableLocalDisplay" class="button secondary" type="button">Show real details in Cockpit on this computer</button></section>
+      <header class="masthead">
+        <p class="eyebrow">FIELD BROWSER BRIDGE</p>
+        <h1 id="title">Field Browser Bridge</h1>
+        <p id="extensionVersion" class="approval-note"></p>
+        <p class="intro">Talk to Claude or ChatGPT in their apps; they act on this browser through Field Browser Bridge.</p>
+      </header>
+
+      <section id="setupCard" class="settings-card" aria-labelledby="setupTitle" hidden>
+        <h2 id="setupTitle">Set up this browser</h2>
+        <ol><li>Pin this extension: click the puzzle-piece icon at the top right of Chrome, then the pin next to Field Browser Bridge.</li><li>Enter the pairing code from Cockpit below, then press Pair browser.</li></ol>
+      </section>
+      <section id="pairingCard" class="settings-card" aria-labelledby="pairingTitle">
+        <h2 id="pairingTitle">Pair this browser</h2>
+        <label for="brokerUrl">Server address</label><input id="brokerUrl" type="url" value="" placeholder="https://your-server.example/work-edge/ingest">
+        <label for="pairCode">Pairing code</label><input id="pairCode" inputmode="text" maxlength="12" autocomplete="off" spellcheck="false">
+        <button id="pairBrowser" class="button secondary" type="button">Pair browser</button>
+        <p id="pairStatus" role="status">Enter the pairing code from Cockpit.</p>
+      </section>
+      <section class="context-card" aria-labelledby="contextTitle">
+        <div class="context-heading"><span class="page-dot" aria-hidden="true"></span><div><p class="eyebrow" id="contextTitle">CURRENT PAGE</p><p id="pageTitle" class="page-title">No page context yet</p></div></div>
+        <p id="status" role="status">Enable reading normal tabs once to keep read-only page context available.</p>
+        <button id="enableReading" class="button secondary" type="button" hidden>Enable reading normal tabs</button>
+        <label class="monitor-toggle"><input id="readMonitoring" type="checkbox" checked> Read monitoring</label>
+        <label class="monitor-toggle"><input id="readEditableText" type="checkbox"> Read text in documents and drafts you are editing</label>
+        <p class="approval-note">Agents can read visible text on work pages. Read access never includes cookies, storage, or form values.</p>
+        <div id="readApproval" class="read-approval sub-option">
+          <p id="sensitiveReadNotice">Sensitive content is readable by default on this page.</p>
+          <label class="monitor-toggle"><input id="restrictSensitiveRead" type="checkbox"> Require per-site approval for sensitive content</label>
+          <button id="allowSensitiveRead" class="button secondary" type="button">Allow sensitive reads for this site</button>
+          <button id="forgetSensitiveRead" class="link-button" type="button" hidden>Forget sensitive read trust</button>
+          <p id="sensitiveReadStatus" class="approval-note" role="status" hidden>Sensitive reads are restricted until approved.</p>
+        </div>
+        <button id="capture" class="button primary" type="button">Refresh page context</button>
+      </section>
+
+      <section id="verifiedApprovalCard" class="approval-card" aria-labelledby="approvalTitle" hidden>
+        <p class="eyebrow">VERIFIED ACTION</p><h2 id="approvalTitle">Approval required</h2>
+        <p id="approvalIntent" class="approval-intent"></p><p id="approvalTarget" class="approval-target"></p>
+        <dl id="approvalChanges" class="approval-changes"></dl><p id="approvalCommit" class="approval-commit"></p>
+        <p class="approval-warning">Approve only if these exact changes belong to the page currently open.</p>
+        <div class="button-row"><button id="rejectVerifiedAction" class="button danger" type="button">Reject</button><button id="approveVerifiedAction" class="button approve" type="button">Approve exact changes</button></div>
+        <p id="verifiedApprovalStatus" role="status"></p>
+      </section>
+
+      <section class="settings-card" aria-labelledby="brokerTitle">
+        <h2 id="brokerTitle">Broker connection</h2>
+        <p class="approval-note">Use Field Browser Bridge cloud, or your own server's address</p>
+        <button id="saveBroker" class="button secondary" type="button">Save broker URL</button>
+        <button id="resetPairing" class="button text-button" type="button">Reset pairing</button>
+      </section>
+
+      <section class="settings-card" id="agentsCard" aria-labelledby="agentsTitle">
+        <h2 id="agentsTitle">Manage agents (owner sign-in)</h2>
+        <div id="agentsSignedOut">
+          <label for="ownerPassphrase">Owner passphrase</label>
+          <input id="ownerPassphrase" type="password" autocomplete="current-password">
+          <button id="ownerSignIn" class="button primary" type="button">Sign in</button>
+        </div>
+        <div id="agentsSignedIn" hidden>
+          <label for="agentPreset">Agent</label>
+          <select id="agentPreset">
+            <option value="claude-ai">Claude.ai</option>
+            <option value="chatgpt">ChatGPT</option>
+            <option value="claude-code">Claude Code</option>
+            <option value="codex">Codex</option>
+            <option value="antigravity">Antigravity</option>
+            <option value="other">Other MCP agent</option>
+          </select>
+          <label class="monitor-toggle"><input id="allowVerifiedPropose" type="checkbox"> Allow verified actions (propose)</label>
+          <label class="monitor-toggle"><input id="allowVerifiedExecute" type="checkbox"> Allow verified actions (execute)</label>
+          <button id="connectAgent" class="button primary" type="button">Connect</button>
+          <div id="agentResult"></div>
+          <h2>Connected agents</h2>
+          <div id="agentsList"></div>
+          <button id="pairFromOwner" class="button secondary" type="button" hidden>Pair this browser</button>
+          <div id="ownerPairChoices" role="group" aria-label="Choose browser pairing" hidden></div>
+          <button id="ownerSignOut" class="button text-button" type="button">Sign out</button>
+        </div>
+        <p id="agentsStatus" role="status">Sign in with your owner passphrase to manage agents.</p>
+      </section>
+
+      <section class="control-card" aria-labelledby="controlTitle">
+        <h2 id="controlTitle">Browser control</h2>
+        <p>Leave control off unless you want an authenticated agent to drive the current page. Final actions still require explicit verified approval.</p>
+        <button id="toggleBrowserControl" class="button primary" type="button">Turn browser control on</button>
+        <p id="armStatus" role="status">Browser control is OFF.</p>
+        <p id="browserIdentity" role="status">This browser is not identified yet.</p>
+        <p id="agentControlStatus" role="status">No agent has acted on this browser yet.</p>
+      </section>
+    </main>
+    <script type="module" src="popup.js"></script>
+    <script type="module" src="agents-panel.js"></script>
+    <script type="module" src="cockpit-panel.js"></script>
+  </body>
+</html>
